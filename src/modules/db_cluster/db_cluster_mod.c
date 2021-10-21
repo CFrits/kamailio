@@ -127,12 +127,12 @@ str dbcl_connection_disabled_str = str_init("disabled");
 
 str *dbcl_get_status_str(int status)
 {
-    if (status & DBCL_CON_INACTIVE)
-        return &dbcl_connection_disabled_str;
-    else
-        return &dbcl_connection_active_str;
+	if (status & DBCL_CON_INACTIVE)
+		return &dbcl_connection_disabled_str;
+	else
+		return &dbcl_connection_active_str;
 
-    return 0;
+	return 0;
 }
 
 static int dbcl_active_count_connections(str cluster)
@@ -177,7 +177,7 @@ static void dbcl_rpc_list_connections(rpc_t *rpc, void *c)
 	dbcl_cls_t *cls=NULL;
 	str cluster;
 	int i, j;
-    unsigned int ticks;
+	unsigned int ticks;
 
 	if (rpc->scan(c, "S", &cluster) != 1) {
 		rpc->fault(c, 500, "Not enough parameters (cluster)");
@@ -264,7 +264,7 @@ static void dbcl_rpc_disable_connection(rpc_t *rpc, void *c)
 		return;
 
 	/* Overwrite the number of seconds if the connection is already disabled. */
-    if (con->sinfo->state & DBCL_CON_INACTIVE)
+	if (con->sinfo->state & DBCL_CON_INACTIVE)
 	{
 		dbcl_disable_con(con, seconds);
 		return;
@@ -283,35 +283,35 @@ static void dbcl_rpc_disable_connection(rpc_t *rpc, void *c)
 
 static void dbcl_rpc_enable_connection(rpc_t *rpc, void *c)
 {
-    dbcl_cls_t *cls=NULL;
-    dbcl_con_t *con=NULL;
-    str cluster;
-    str connection;
+	dbcl_cls_t *cls=NULL;
+	dbcl_con_t *con=NULL;
+	str cluster;
+	str connection;
 
-    if (rpc->scan(c, "SS", &cluster, &connection) < 2) {
-        rpc->fault(c, 500, "Not enough parameters (cluster) (connection)");
-        return;
-    }
+	if (rpc->scan(c, "SS", &cluster, &connection) < 2) {
+		rpc->fault(c, 500, "Not enough parameters (cluster) (connection)");
+		return;
+	}
 
-    cls = dbcl_get_cluster(&cluster);
-    
-    if(cls==NULL)
-    {   
-        LM_INFO("cluster not found [%.*s]\n", cluster.len, cluster.s);
-        return;
-    }
+	cls = dbcl_get_cluster(&cluster);
 
-    con = dbcl_get_connection(&connection);
-    
-    if(con==NULL)
-    {   
-        LM_INFO("connection not found [%.*s]\n", connection.len, connection.s);
-        return;
-    }
+	if(cls==NULL)
+	{   
+		LM_INFO("cluster not found [%.*s]\n", cluster.len, cluster.s);
+		return;
+	}
 
-    dbcl_enable_con(con);
-    
-    return;
+	con = dbcl_get_connection(&connection);
+
+	if(con==NULL)
+	{   
+		LM_INFO("connection not found [%.*s]\n", connection.len, connection.s);
+		return;
+	}
+
+	dbcl_enable_con(con);
+
+	return;
 }
 
 static void dbcl_rpc_list_clusters(rpc_t *rpc, void *c)
